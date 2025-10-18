@@ -122,15 +122,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       if (error) throw error;
       
-      // Si aucun rôle n'est trouvé, créer un rôle par défaut
+      // Le rôle est créé automatiquement par le trigger handle_new_user
+      // Si aucun rôle n'est trouvé, utiliser MEMBRE par défaut
       if (!data) {
-        const { error: insertError } = await supabase
-          .from('user_roles')
-          .insert({ user_id: userId, role: 'MEMBRE' });
-        
-        if (insertError) {
-          console.error('Error creating default role:', insertError);
-        }
+        console.warn('No role found for user:', userId);
         setUserRole('MEMBRE');
       } else {
         setUserRole(data.role);
