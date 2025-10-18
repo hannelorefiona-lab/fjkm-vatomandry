@@ -1,3 +1,7 @@
+/**
+ * Page de gestion des finances de la paroisse
+ * Affiche les contributions, statistiques financières et rapports
+ */
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -12,6 +16,11 @@ import { FinancialReports } from "@/components/finances/FinancialReports";
 import { CardGenerator } from "@/components/finances/CardGenerator";
 import { useAuth } from "@/hooks/useAuth";
 
+/**
+ * Composant de la page Finances
+ * Gère l'affichage des différentes vues financières selon les permissions utilisateur
+ * @returns {JSX.Element} Page de gestion des finances
+ */
 const Finances = () => {
   const { user, canViewFinances, canManageFinances } = useAuth();
   const [activeTab, setActiveTab] = useState("overview");

@@ -1,3 +1,7 @@
+/**
+ * Composant de mise en page principal de l'application
+ * Gère la structure globale avec sidebar, header et contenu principal
+ */
 import { ReactNode } from 'react';
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/components/AppSidebar';
@@ -5,10 +9,20 @@ import { useAuth } from '@/hooks/useAuth';
 import { Navigate } from 'react-router-dom';
 import { NotificationSystem } from '@/components/NotificationSystem';
 
+/**
+ * Props du composant Layout
+ * @property {ReactNode} children - Contenu de la page à afficher
+ */
 interface LayoutProps {
   children: ReactNode;
 }
 
+/**
+ * Layout principal de l'application
+ * Protège les routes et affiche la structure globale (sidebar, header, contenu)
+ * @param {LayoutProps} props - Props du composant
+ * @returns {JSX.Element} Layout avec navigation et contenu
+ */
 export function Layout({ children }: LayoutProps) {
   const { user, loading } = useAuth();
 

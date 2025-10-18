@@ -1,3 +1,7 @@
+/**
+ * Composant affichant un graphique en camembert des contributions financières
+ * Visualise la répartition des dîmes, offrandes et dons pour l'année en cours
+ */
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChartContainer, ChartTooltip } from "@/components/ui/chart";
@@ -5,12 +9,23 @@ import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
+/**
+ * Type pour les données du graphique en camembert
+ * @property {string} name - Nom du type de contribution (Dîmes, Offrandes, Dons)
+ * @property {number} value - Montant total en Ariary
+ * @property {string} color - Couleur hexadécimale pour l'affichage
+ */
 interface PieData {
   name: string;
   value: number;
   color: string;
 }
 
+/**
+ * Composant PieChartOnly
+ * Affiche un graphique en camembert responsive des contributions par type
+ * @returns {JSX.Element} Graphique en camembert avec légende
+ */
 export const PieChartOnly = () => {
   const [pieData, setPieData] = useState<PieData[]>([]);
   const [loading, setLoading] = useState(true);
@@ -19,6 +34,10 @@ export const PieChartOnly = () => {
     fetchChartData();
   }, []);
 
+  /**
+   * Récupère et agrège les données des contributions pour l'année en cours
+   * Calcule les totaux par type de contribution (dîmes, offrandes, dons)
+   */
   const fetchChartData = async () => {
     try {
       const currentYear = new Date().getFullYear();

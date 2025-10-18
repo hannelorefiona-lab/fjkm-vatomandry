@@ -1,13 +1,28 @@
+/**
+ * Composant de protection des routes administrateur
+ * Vérifie les permissions avant d'autoriser l'accès aux pages admin
+ */
 import { ReactNode } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { Navigate } from 'react-router-dom';
 import { AlertCircle } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 
+/**
+ * Props du composant AdminRoute
+ * @property {ReactNode} children - Contenu protégé à afficher si autorisé
+ */
 interface AdminRouteProps {
   children: ReactNode;
 }
 
+/**
+ * Route protégée pour les administrateurs
+ * Redirige vers la page d'authentification si non connecté
+ * Affiche un message d'erreur si non autorisé
+ * @param {AdminRouteProps} props - Props du composant
+ * @returns {JSX.Element} Contenu protégé ou message d'erreur
+ */
 export function AdminRoute({ children }: AdminRouteProps) {
   const { user, isAdmin, loading } = useAuth();
 

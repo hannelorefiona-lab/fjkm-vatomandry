@@ -1,3 +1,7 @@
+/**
+ * Composant principal de l'application FJKM Vatomandry
+ * Configure les providers globaux et définit le routage de l'application
+ */
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -17,8 +21,13 @@ import Admin from "./pages/Admin";
 import MemberProfile from "./pages/MemberProfile";
 import NotFound from "./pages/NotFound";
 
+/** Instance du client React Query pour la gestion du cache et des requêtes */
 const queryClient = new QueryClient();
 
+/**
+ * Composant racine de l'application
+ * @returns {JSX.Element} Structure complète de l'application avec routing
+ */
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <AuthProvider>

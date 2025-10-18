@@ -1,8 +1,29 @@
+/**
+ * Hook personnalisé pour la gestion de l'authentification et des rôles utilisateurs
+ * Fournit l'accès aux informations de l'utilisateur connecté et aux fonctions d'authentification
+ */
 import React, { useState, useEffect, createContext, useContext, ReactNode } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
+/**
+ * Type définissant le contexte d'authentification
+ * @property {User | null} user - Utilisateur connecté
+ * @property {Session | null} session - Session active
+ * @property {string | null} userRole - Rôle de l'utilisateur (ADMIN, RESPONSABLE, MEMBRE, etc.)
+ * @property {boolean} loading - État de chargement
+ * @property {Function} signIn - Fonction de connexion
+ * @property {Function} signUp - Fonction d'inscription
+ * @property {Function} signOut - Fonction de déconnexion
+ * @property {boolean} isAdmin - Vérifie si l'utilisateur est admin
+ * @property {boolean} isResponsable - Vérifie si l'utilisateur est responsable
+ * @property {Function} hasRole - Vérifie si l'utilisateur a un rôle spécifique
+ * @property {Function} canManageFinances - Vérifie les permissions de gestion financière
+ * @property {Function} canManageAdherents - Vérifie les permissions de gestion des adhérents
+ * @property {Function} canViewFinances - Vérifie les permissions de visualisation financière
+ * @property {Function} canManageUsers - Vérifie les permissions de gestion des utilisateurs
+ */
 interface AuthContextType {
   user: User | null;
   session: Session | null;
@@ -20,8 +41,15 @@ interface AuthContextType {
   canManageUsers: () => boolean;
 }
 
+/** Contexte React pour l'authentification */
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+/**
+ * Provider d'authentification pour l'application
+ * Gère l'état de l'utilisateur, la session et les permissions
+ * @param {Object} props - Props du composant
+ * @param {ReactNode} props.children - Composants enfants
+ */
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
@@ -112,6 +140,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
+  /**
+   * Récupère le rôle de l'utilisateur depuis la base de données
+   * @param {string} userId - ID de l'utilisateur
+   */
   const fetchUserRole = async (userId: string) => {
     try {
       const { data, error } = await supabase
@@ -136,6 +168,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  /**
+   * Connecte un utilisateur avec email et mot de passe
+   * @param {string} email - Email de l'utilisateur
+   * @param {string} password - Mot de passe
+   * @returns {Promise<{error?: any}>} Résultat de la connexion
+   */
   const signIn = async (email: string, password: string) => {
     try {
       const { error } = await supabase.auth.signInWithPassword({
@@ -163,6 +201,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  /**
+   * Inscrit un nouvel utilisateur
+   * @param {string} email - Email de l'utilisateur
+   * @param {string} password - Mot de passe
+   * @param {string} username - Nom d'utilisateur
+   * @returns {Promise<{error?: any}>} Résultat de l'inscription
+   */
   const signUp = async (email: string, password: string, username: string) => {
     try {
       const redirectUrl = `${window.location.origin}/`;
@@ -198,6 +243,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  /**
+   * Déconnecte l'utilisateur actuel
+   */
   const signOut = async () => {
     try {
       const { error } = await supabase.auth.signOut();
@@ -241,6 +289,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   );
 }
 
+/**
+ * Hook pour accéder au contexte d'authentification
+ * @throws {Error} Si utilisé en dehors d'un AuthProvider
+ * @returns {AuthContextType} Contexte d'authentification
+ */
 export function useAuth() {
   const context = useContext(AuthContext);
   if (context === undefined) {

@@ -1,3 +1,7 @@
+/**
+ * Gestionnaire des contributions financières
+ * Permet d'ajouter, modifier et supprimer les dîmes, offrandes et dons
+ */
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -13,6 +17,15 @@ import { toast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 
+/**
+ * Type pour une contribution financière
+ * @property {string} id - Identifiant unique
+ * @property {string} adherent_id - ID de l'adhérent
+ * @property {'dime' | 'offrande' | 'don'} type - Type de contribution
+ * @property {number} montant - Montant en Ariary
+ * @property {string} date_contribution - Date de la contribution
+ * @property {Object} adherent - Informations de l'adhérent
+ */
 interface Contribution {
   id: string;
   adherent_id: string;
@@ -25,16 +38,31 @@ interface Contribution {
   };
 }
 
+/**
+ * Type pour un adhérent simplifié
+ * @property {string} id_adherent - Identifiant unique
+ * @property {string} nom - Nom de famille
+ * @property {string} prenom - Prénom
+ */
 interface Adherent {
   id_adherent: string;
   nom: string;
   prenom: string;
 }
 
+/**
+ * Props du composant ContributionsManager
+ * @property {boolean} canManage - Permission de gérer les contributions
+ */
 interface ContributionsManagerProps {
   canManage: boolean;
 }
 
+/**
+ * Composant de gestion des contributions financières
+ * @param {ContributionsManagerProps} props - Props du composant
+ * @returns {JSX.Element} Interface de gestion des contributions
+ */
 export const ContributionsManager = ({ canManage }: ContributionsManagerProps) => {
   const [contributions, setContributions] = useState<Contribution[]>([]);
   const [adherents, setAdherents] = useState<Adherent[]>([]);
@@ -56,6 +84,9 @@ export const ContributionsManager = ({ canManage }: ContributionsManagerProps) =
     fetchAdherents();
   }, []);
 
+  /**
+   * Récupère toutes les contributions depuis la base de données
+   */
   const fetchContributions = async () => {
     try {
       const { data, error } = await supabase
@@ -85,6 +116,9 @@ export const ContributionsManager = ({ canManage }: ContributionsManagerProps) =
     }
   };
 
+  /**
+   * Récupère la liste des adhérents pour le formulaire
+   */
   const fetchAdherents = async () => {
     try {
       const { data, error } = await supabase
@@ -104,6 +138,10 @@ export const ContributionsManager = ({ canManage }: ContributionsManagerProps) =
     }
   };
 
+  /**
+   * Gère la soumission du formulaire d'ajout de contribution
+   * @param {React.FormEvent} e - Événement de soumission
+   */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -141,6 +179,10 @@ export const ContributionsManager = ({ canManage }: ContributionsManagerProps) =
     }
   };
 
+  /**
+   * Supprime une contribution après confirmation
+   * @param {string} id - ID de la contribution à supprimer
+   */
   const deleteContribution = async (id: string) => {
     if (!confirm("Êtes-vous sûr de vouloir supprimer cette contribution ?")) return;
 
@@ -167,6 +209,11 @@ export const ContributionsManager = ({ canManage }: ContributionsManagerProps) =
     }
   };
 
+  /**
+   * Retourne la classe CSS pour la couleur du badge selon le type
+   * @param {string} type - Type de contribution
+   * @returns {string} Classe CSS du badge
+   */
   const getTypeColor = (type: string) => {
     switch (type) {
       case 'dime': return 'bg-green-100 text-green-800';
@@ -176,6 +223,11 @@ export const ContributionsManager = ({ canManage }: ContributionsManagerProps) =
     }
   };
 
+  /**
+   * Retourne le libellé français du type de contribution
+   * @param {string} type - Type de contribution
+   * @returns {string} Libellé en français
+   */
   const getTypeLabel = (type: string) => {
     switch (type) {
       case 'dime': return 'Dîme';

@@ -1,3 +1,7 @@
+/**
+ * Tableau de bord principal de l'application
+ * Affiche les statistiques générales et la vue d'ensemble de la paroisse
+ */
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Users, TrendingUp, Calendar, Activity, MapPin, UserCheck } from 'lucide-react';
@@ -7,6 +11,11 @@ import { supabase } from '@/integrations/supabase/client';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
 
+/**
+ * Composant du tableau de bord
+ * Affiche les statistiques, graphiques et activités récentes
+ * @returns {JSX.Element} Page du tableau de bord
+ */
 const Dashboard = () => {
   const [stats, setStats] = useState({
     totalAdherents: 0,
@@ -23,6 +32,10 @@ const Dashboard = () => {
     fetchDashboardData();
   }, []);
 
+  /**
+   * Récupère toutes les données nécessaires au tableau de bord
+   * (statistiques, quartiers, activités récentes)
+   */
   const fetchDashboardData = async () => {
     try {
       setLoading(true);
@@ -96,6 +109,12 @@ const Dashboard = () => {
     }
   };
 
+  /**
+   * Calcule le pourcentage d'une valeur par rapport au total
+   * @param {number} value - Valeur à calculer
+   * @param {number} total - Total de référence
+   * @returns {number} Pourcentage arrondi
+   */
   const calculatePercentage = (value: number, total: number) => {
     return total > 0 ? Math.round((value / total) * 100) : 0;
   };
